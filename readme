@@ -1,0 +1,8 @@
+GNSS baseline processing with RRE(Reduced Rank Extrapolation)
+1. baseline solution file, linked list data structure
+    x-coordinate, y-coordinate, z-coordinate, ratio value
+    time year/month/day hour/minute/second
+
+2. valid baseline data, ratio value great than 3.0
+
+3. if count of valid data less than 2, mean value

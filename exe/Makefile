@@ -6,13 +6,13 @@ OBJECT := $(patsubst %.c,%.o,$(wildcard $(PATH_SRC)/*.c))
 
 .PHONY: all clean
 
-all: adjust_exe
+all: baseline_exe
 
-adjust_exe: $(OBJECT)
-	$(CC) $(OBJECT) -o adjust_exe -lm
+baseline_exe: $(OBJECT)
+	$(CC) $(OBJECT) -o baseline_exe -lm
 
 %.o: %.c
 	$(CC) $(CFLAGS) "$<" -o "$@"
 
 clean:
-	rm adjust_exe $(OBJECT)
+	rm baseline_exe $(OBJECT)
