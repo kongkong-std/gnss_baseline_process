@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#if 0
 int main(int argc, char **argv)
 {
     FILE *fp = NULL;
@@ -57,3 +58,27 @@ int main(int argc, char **argv)
 
     return 0;
 }
+#endif
+
+#if 1
+typedef struct
+{
+    double a, b, c;
+    int d[5];
+} Test;
+int main()
+{
+    Test a = {0};
+
+    printf("a.a = %.4lf\n"
+           "a.b = %.4lf\n"
+           "a.c = %.4lf\n",
+           a.a, a.b, a.c);
+    for (int index = 0; index < 5; ++index)
+    {
+        printf("a.d[%d] = %d or %d\n", index, a.d[index], *(a.d + index));
+    }
+
+    return 0;
+}
+#endif

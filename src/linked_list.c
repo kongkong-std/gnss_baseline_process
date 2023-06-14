@@ -36,6 +36,8 @@ int IsLinkedListFull(const List_LinkedList *pList)
         value = 0;
     }
 
+    free( temp );
+
     return value;
 }
 

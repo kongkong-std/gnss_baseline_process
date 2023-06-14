@@ -69,7 +69,7 @@ int IsLinkedListFull(const List_LinkedList *);
  * if add successfully, return 1
  * if add unsuccessfully, return 0
  */
-int AddItemToLinedList(Item_LinkedList, List_LinkedList *);
+int AddItemToLinkedList(Item_LinkedList, List_LinkedList *);
 
 /*
  * linked list traversal with function pointer
