@@ -2,6 +2,7 @@
 
 void DisplayItem(Item_LinkedList);
 
+// int RREFilter( char * post_pos_path/*postpos file path*/, double * rre_solution/*rre filter solution, size = 3*/ )
 int main(int argc, char **argv)
 {
     char *file_baseline = argv[1]; // path of baseline file
