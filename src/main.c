@@ -26,6 +26,20 @@ int main(int argc, char **argv)
 
     BaseLineRREImpl(rover_station_data, base_station, sol_rover_station);
 
+#if 1 // display solution
+    puts("======== baseline solution of RRE ========");
+    for (int index = 0; index < 3; ++index)
+    {
+        printf("%.4lf\n", sol_rover_station[index]);
+    }
+
+    puts( "======== position solution of RRE ========" );
+    for( int index = 0; index < 3; ++index )
+    {
+        printf( "%.4lf\n", sol_rover_station[index] + base_station[index] );
+    }
+#endif
+
     // free memory
     DestroyLinkedList(rover_station_data);
     free(rover_station_data);

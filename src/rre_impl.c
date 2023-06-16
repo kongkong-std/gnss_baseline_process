@@ -66,6 +66,17 @@ void RREProcess(double **vec_seq, int size_row, int size_column, double *trans_v
             diff_vec_seq[index_i][index_j] = vec_seq[index_j + 1][index_i] - vec_seq[index_j][index_i];
         }
     }
+#if 0 // check diff_vec_seq
+for( int index = 0; index < size_column; ++index )
+{
+    printf( "%.4lf\n", diff_vec_seq[ index ][ size_row - 2 ]   );
+}
+puts( "==== ---- ====" );
+for( int index = 0; index < size_column; ++index )
+{
+    printf( "%.4lf\n", diff_vec_seq[ index ][ size_row - 1 ]   );
+}
+#endif
 
     double **double_diff_vec_seq = NULL; // size = size_column x ( size_row - 2 )
     double_diff_vec_seq = (double **)malloc(size_column * sizeof(double *));
@@ -92,6 +103,12 @@ void RREProcess(double **vec_seq, int size_row, int size_column, double *trans_v
     // unconstraint least-square equation
     RREUnconstraintLSE(double_diff_vec_seq, diff_vec_seq, size_column, size_row - 2, rre_gamma);
 
+    // computing result of rre
+    /*
+     * trans_vec_seq = vec_seq( size_row, : ) - diff_vec_seq( :, 2 : size_row - 1 ) * rre_gamma
+     */
+    RREUpdateSolution(vec_seq, diff_vec_seq, rre_gamma, trans_vec_seq, size_row, size_column);
+
     // free memory
     free(rre_gamma);
     for (int index = 0; index < size_column; ++index)
@@ -104,6 +121,32 @@ void RREProcess(double **vec_seq, int size_row, int size_column, double *trans_v
         free(*(diff_vec_seq + index));
     }
     free(diff_vec_seq);
+}
+
+void RREUpdateSolution(double **mat_1, double **mat_2, double *gamma, double *solution, int m, int n)
+{
+    // note
+    /*
+     * size mat_1 = m x n
+     * size mat_2 = n x m - 1
+     * size gamma = m - 2
+     * size solution = n x 1
+     *
+     * solution = mat_1( m, : )' - mat_2( :, 2 : m - 1 ) gamma
+     */
+    for (int index_i = 0; index_i < n; ++index_i)
+    {
+        // solution = mat_1( m, : )' - mat_2( :, 2 : m - 1 ) gamma
+        /*
+         * solution(i) = mat_1( m, i ) - \sum _ { k = 1 : m - 2 } mat_2( i, k + 1 ) gamma(k)
+         */
+        double sum_tmp = 0.;
+        for (int index_j = 0; index_j < m - 1; ++index_j)
+        {
+            sum_tmp += mat_2[index_i][index_j + 1] * gamma[index_j];
+        }
+        solution[index_i] = mat_1[m - 1][index_i] - sum_tmp;
+    }
 }
 
 void RREUnconstraintLSE(double **delta_mat_u, double **mat_u, int size_row, int size_column, double *gamma)
@@ -149,8 +192,20 @@ void RREUnconstraintLSE(double **delta_mat_u, double **mat_u, int size_row, int 
     solution_tmp = (double *)malloc(size_row * sizeof(double));
     rhs_tmp = (double *)malloc(size_row * sizeof(double));
 
+    // rhs_tmp = mat_u( :, size_column + 1 )
+    for (int index = 0; index < size_row; ++index)
+    {
+        rhs_tmp[index] = mat_u[index][size_column];
+    }
+
     // mat_tmp solution_tmp = rhs_tmp
     GaussElimination(mat_tmp, rhs_tmp, solution_tmp, size_row);
+
+    // computing gamma
+    /*
+     * gamma = trans_delta_mat_u * solution_tmp
+     */
+    MatVecProduct(trans_delta_mat_u, solution_tmp, gamma, size_column, size_row);
 
     // free memory
     free(solution_tmp);
@@ -164,49 +219,4 @@ void RREUnconstraintLSE(double **delta_mat_u, double **mat_u, int size_row, int 
         free(*(mat_tmp + index));
     }
     free(mat_tmp);
-}
-
-void GaussElimination(double **mat, double *rhs, double *sol, int size)
-{
-}
-
-void MatTranspose(double **mat, double **trans_mat, int size_row, int size_column)
-{
-    // trans_mat( i, j ) = mat( j, i )
-    /*
-     * size mat = size_row x size_column
-     * size trans_mat = size_column x size_row
-     */
-    for (int index_i = 0; index_i < size_column; ++index_i)
-    {
-        for (int index_j = 0; index_j < size_row; ++index_j)
-        {
-            trans_mat[index_i][index_j] = mat[index_j][index_i];
-        }
-    }
-}
-
-void MatMatProduct(double **mat_1, double **mat_2, double **mat, int size_row, int size_column, int size_column_2)
-{
-    // mat = mat_1 x mat_2
-    /*
-     * size mat_1 = size_row x size_column
-     * size mat_2 = size_column x size_column_2
-     * size_mat = size_row x size_column_2
-     *
-     * mat( i, j ) = \sum_{ k = 1 } ^ size_column mat_1( i, k ) * mat_2( k, j )
-     */
-
-    for (int index_i = 0; index_i < size_row; ++index_i)
-    {
-        for (int index_j = 0; index_j < size_column_2; ++index_j)
-        {
-            double tmp = 0.;
-            for (int index_k = 0; index_k < size_column; ++index_k)
-            {
-                tmp += mat_1[index_i][index_k] * mat_2[index_k][index_j];
-            }
-            mat[index_i][index_j] = tmp;
-        }
-    }
 }

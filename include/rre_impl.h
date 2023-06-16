@@ -3,6 +3,7 @@
 
 // header file
 #include "main.h"
+#include "linsys_solver_direct.h"
 
 // function prototype
 /*
@@ -23,29 +24,8 @@ void RREProcess(double **, int, int, double *);
 void RREUnconstraintLSE(double **, double **, int, int, double *);
 
 /*
- * transpose of matrix
- *     1. mat
- *     2. transpose of mat
- *     3. size
+ * updating rre solution
  */
-void MatTranspose(double **, double **, int, int);
-
-/*
- * matrix by matrix product
- *     1. mat_1
- *     2. mat_2
- *     3. mat = mat_1 x mat_2
- *     4. size
- */
-void MatMatProduct(double **, double **, double **, int, int, int);
-
-/*
-* gaussian elimination to solve linear system
-*     1. covariant matrix
-*     2. rhs vector
-*     3. solution
-*     4. size
-*/
-void GaussElimination( double * *, double *, double *, int );
+void RREUpdateSolution(double **, double **, double *, double *, int, int);
 
 #endif
