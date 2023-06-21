@@ -11,11 +11,11 @@
 // function prototype
 /*
  * source data file process
- *     1. source data file path
+ *     1. source data file path, threshold of ratio value
  *     2. base station position, size of base station array is 3
  *     3. add to linked list
  */
-void SourceDataProcess(char *, double *, List_LinkedList *);
+void SourceDataProcess(char *, double, double *, List_LinkedList *);
 
 /*
  * baseline process with rre

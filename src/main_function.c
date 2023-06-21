@@ -1,6 +1,26 @@
+/**
+ * @file main_function.c
+ * @author Zikang Qin
+ * @brief post position data process
+ * @version 0.1
+ * @date 2023-06-21
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #include "../include/main.h"
 
-void SourceDataProcess(char *path_file, double *base_station, List_LinkedList *rover_station_data)
+/**
+ * @callgraph
+ * @brief source data file process, e.g. assign values
+ * to base station coordinate, assign values to linked list
+ * 
+ * @param [in] path_file path of source data file
+ * @param [in] valid_ratio ratio threshold
+ * @param [in,out] base_station coordinate of base station
+ * @param [in,out] rover_station_data linked list to store valid data
+ */
+void SourceDataProcess(char *path_file, double valid_ratio, double *base_station, List_LinkedList *rover_station_data)
 {
     FILE *fp_rover = NULL;
     if ((fp_rover = fopen(path_file, "rb")) == NULL)
@@ -37,7 +57,7 @@ void SourceDataProcess(char *path_file, double *base_station, List_LinkedList *r
                    &(item_tmp.x), &(item_tmp.y), &(item_tmp.z), &(item_tmp.ratio));
         }
 
-        if (!(item_tmp.ratio < 3.) && (IsLinkedListFull(rover_station_data) == 0))
+        if (!(item_tmp.ratio < valid_ratio) && (IsLinkedListFull(rover_station_data) == 0))
         {
             // fixed solution
             AddItemToLinkedList(item_tmp, rover_station_data);

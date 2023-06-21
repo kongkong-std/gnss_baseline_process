@@ -1,5 +1,23 @@
+/**
+ * @file rre_impl.c
+ * @author Zikang Qin
+ * @brief reduced rank extrapolation implementation functions
+ * @version 0.1
+ * @date 2023-06-21
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #include "../include/rre_impl.h"
 
+/**
+ * @callgraph
+ * @brief baseline process RRE main implementation
+ * 
+ * @param [in] pList linked list
+ * @param [in] base_station coordinate of base station
+ * @param [in,out] solution solution to rre
+ */
 void BaseLineRREImpl(const List_LinkedList *pList, const double *base_station, double *solution)
 {
     int base_line_size = pList->size;
@@ -45,6 +63,15 @@ void BaseLineRREImpl(const List_LinkedList *pList, const double *base_station, d
     free(base_line_data);
 }
 
+/**
+ * @callgraph
+ * @brief rre process
+ * 
+ * @param [in] vec_seq original vector sequence
+ * @param [in] size_row row size of vector sequence 
+ * @param [in] size_column column size of vector sequence
+ * @param [in,out] trans_vec_seq solution to rre 
+ */
 void RREProcess(double **vec_seq, int size_row, int size_column, double *trans_vec_seq)
 {
     double **diff_vec_seq = NULL; // size = size_column x ( size_row - 1 )
@@ -123,6 +150,18 @@ for( int index = 0; index < size_column; ++index )
     free(diff_vec_seq);
 }
 
+/**
+ * @callgraph
+ * @brief fusing valid data with linear combination coefficients
+ * to update solution
+ * 
+ * @param [in] mat_1 original vector sequence
+ * @param [in] mat_2 difference of original vector sequence
+ * @param [in] gamma linear combination coefficients
+ * @param [in,out] solution solution to rre
+ * @param [in] m row size of vector sequence
+ * @param [in] n column size of vector sequence
+ */
 void RREUpdateSolution(double **mat_1, double **mat_2, double *gamma, double *solution, int m, int n)
 {
     // note
@@ -149,6 +188,16 @@ void RREUpdateSolution(double **mat_1, double **mat_2, double *gamma, double *so
     }
 }
 
+/**
+ * @callgraph
+ * @brief assemble unconstraint least-squares equation
+ * 
+ * @param [in] delta_mat_u difference of mat_u
+ * @param [in] mat_u difference of original vector sequence
+ * @param [in] size_row row size of delta_mat_u
+ * @param [in] size_column column size of delta_mat_u
+ * @param [in,out] gamma linear combination coefficients of rre
+ */
 void RREUnconstraintLSE(double **delta_mat_u, double **mat_u, int size_row, int size_column, double *gamma)
 {
     // note

@@ -1,11 +1,33 @@
+/**
+ * @file main.c
+ * @author Zikang Qin
+ * @brief main function, baseline data process,
+ * fusing valid datas within a time period into
+ * a data output
+ * 
+ * @version 0.1
+ * @date 2023-06-21
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #include "../include/main.h"
 
 void DisplayItem(Item_LinkedList);
 
 // int RREFilter( char * post_pos_path/*postpos file path*/, double * rre_solution/*rre filter solution, size = 3*/ )
+/**
+ * @callgraph
+ * @brief process valid baseline source data
+ * 
+ * @param [in] argc command line parameter 
+ * @param [in] argv command line parameter, path of baseline file
+ * @return int 
+ */
 int main(int argc, char **argv)
 {
     char *file_baseline = argv[1]; // path of baseline file
+    double valid_ratio = 3.;
 
     double base_station[3] = {0};
     double sol_rover_station[3] = {0};
@@ -19,7 +41,7 @@ int main(int argc, char **argv)
 
     InitializeLinkedList(rover_station_data);
 
-    SourceDataProcess(file_baseline, base_station, rover_station_data);
+    SourceDataProcess(file_baseline, valid_ratio, base_station, rover_station_data);
 
 #if 0 // linked list display
     TraverseLinkedList(rover_station_data, DisplayItem);
@@ -48,6 +70,12 @@ int main(int argc, char **argv)
     return 0;
 }
 
+/**
+ * @callgraph
+ * @brief display struct item
+ * 
+ * @param [in] item struct variable 
+ */
 void DisplayItem(Item_LinkedList item)
 {
     printf("%d/%d/%d %d:%d:%.4lf\t%.4lf\t%.4lf%.4lf\t%.4lf",

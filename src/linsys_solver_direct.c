@@ -1,5 +1,25 @@
+/**
+ * @file linsys_solver_direct.c
+ * @author Zikang Qin
+ * @brief 
+ * @version 0.1
+ * @date 2023-06-21
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #include "../include/linsys_solver_direct.h"
 
+/**
+ * @callgraph
+ * @brief gaussian elimination for solving
+ * linear system
+ * 
+ * @param [in] mat coefficient matrix of linear system 
+ * @param [in] rhs right-hand side vector of linear system 
+ * @param [in,out] sol solution to linear system
+ * @param [in] n dimension of linear system
+ */
 void GaussElimination(double **mat, double *rhs, double *sol, int n)
 {
 #if 0 // input check
@@ -107,6 +127,15 @@ for( int index_i = 0; index_i < n; ++index_i )
 #endif
 }
 
+/**
+ * @callgraph
+ * @brief computing transpose of matrix
+ * 
+ * @param [in] mat original matrix
+ * @param [in,out] trans_mat transpose of original matrix
+ * @param [in] size_row row size of original matrix
+ * @param [in] size_column column size of original matrix
+ */
 void MatTranspose(double **mat, double **trans_mat, int size_row, int size_column)
 {
     // trans_mat( i, j ) = mat( j, i )
@@ -123,6 +152,17 @@ void MatTranspose(double **mat, double **trans_mat, int size_row, int size_colum
     }
 }
 
+/**
+ * @callgraph
+ * @brief computing matrix by matrix product
+ * 
+ * @param [in] mat_1 first matrix
+ * @param [in] mat_2 second matrix
+ * @param [in,out] mat mat_1 by mat_2 product
+ * @param [in] size_row row size of mat_1
+ * @param [in] size_column column size of mat_1
+ * @param [in] size_column_2 column_size of mat_2
+ */
 void MatMatProduct(double **mat_1, double **mat_2, double **mat, int size_row, int size_column, int size_column_2)
 {
     // mat = mat_1 x mat_2
@@ -148,6 +188,16 @@ void MatMatProduct(double **mat_1, double **mat_2, double **mat, int size_row, i
     }
 }
 
+/**
+ * @callgraph
+ * @brief computing matrix by vector product
+ * 
+ * @param [in] mat original matrix
+ * @param [in] vec original vector
+ * @param [in,out] sol mat by vec product
+ * @param [in] m row size of original matrix
+ * @param [in] n column size of original matrix
+ */
 void MatVecProduct(double **mat, double *vec, double *sol, int m, int n)
 {
     // note
